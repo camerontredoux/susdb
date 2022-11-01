@@ -1,0 +1,26 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model Message {
+  id               Int      @id @default(autoincrement())
+  createdTimestamp DateTime
+  content          String   @db.VarChar(2000)
+  authorId         String   @db.Char(18)
+  author           Author   @relation(fields: [authorId], references: [id])
+}
+
+model Author {
+  id       String    @id @db.Char(18)
+  messages Message[]
+}
